@@ -47,6 +47,32 @@ export const messageSlice = createSlice({
       state.pending = false;
       state.error = action.payload.error
     },
+    updateProfile: (state, action) => {
+      state.pending = false;
+      state.error = null;
+      state.message = action.payload.message
+    },
+    updateProfilePending: (state, action) => {
+      state.pending = true;
+      state.error = null
+    },
+    updateProfileFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload.error
+    },
+    updatePassword: (state, action) => {
+      state.pending = false;
+      state.error = null;
+      state.message = action.payload.message
+    },
+    updatePasswordPending: (state, action) => {
+      state.pending = true;
+      state.error = null
+    },
+    updatePasswordFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload.error
+    },
     clearError: (state, action) => {
       state.error = null;
     },

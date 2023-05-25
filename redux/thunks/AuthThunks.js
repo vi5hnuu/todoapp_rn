@@ -45,3 +45,19 @@ export async function getMyProfile(dispatch, getState) {
     dispatch(AuthActions.profileFailure({ error: error }));
   }
 }
+
+export function tlogout() {//TODO
+  return async (dispatch, getState) => {
+    dispatch(AuthActions.logoutPending());
+    try {
+      let config = {
+        method: 'get',
+        url: `${serverURL}/logout`,
+      };
+      const { data } = await axios.request(config)
+      dispatch(AuthActions.logout({ message: data.message }));
+    } catch (error) {
+      dispatch(AuthActions.logoutFailure({ error: error }));
+    }
+  }
+}

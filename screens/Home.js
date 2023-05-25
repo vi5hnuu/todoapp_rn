@@ -112,7 +112,7 @@ const Home = ({ route, navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            disabled={state.message.pending}
+            disabled={!title || !description || state.message.pending}
             onPress={addTaskHandler}>
             <Text style={[styles.btnText, { backgroundColor: '#FF8E0D' }]}>Add</Text>
           </TouchableOpacity>
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 5,
     fontSize: 16,
-    alignContent: 'center'
+    alignContent: 'center',
   }
 })
 

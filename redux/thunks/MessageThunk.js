@@ -64,3 +64,43 @@ export function tdeleteTask(id) {
     }
   }
 }
+
+
+export function tupdateProfile(formData) {//TODO
+  return async (dispatch, getState) => {
+    dispatch(MessageActions.updateProfilePending());
+    try {
+      let config = {
+        method: 'patch',
+        url: `${serverURL}/updateProfile`,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        data: formData
+      };
+      const { data } = await axios.request(config)
+      dispatch(MessageActions.updateProfile({ message: data.message }));
+    } catch (error) {
+      dispatch(MessageActions.updateProfileFailure({ error: error }));
+    }
+  }
+}
+export function tupdatePassword({ oldPassword, newPassword, confirmPassword }) {//TODO
+  return async (dispatch, getState) => {
+    dispatch(MessageActions.updatePasswordPending());
+    try {
+      let config = {
+        method: 'patch',
+        url: `${serverURL}/updatepassword`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: { oldPassword, newPassword, confirmPassword }
+      };
+      const { data } = await axios.request(config)
+      dispatch(MessageActions.updatePassword({ message: data.message }));
+    } catch (error) {
+      dispatch(MessageActions.updatePasswordFailure({ error: error }));
+    }
+  }
+}

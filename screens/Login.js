@@ -63,6 +63,14 @@ const Login = ({ route, navigation }) => {
           }}
           textColor='#000'
         >Sign-up instead</Button>
+        <Button
+          style={styles.btn}
+          disabled={pending}
+          onPress={() => {
+            navigation.navigate('forgotPassword')
+          }}
+          textColor='#000'
+        >Forgot Password</Button>
       </View>
     </View>
   </View>

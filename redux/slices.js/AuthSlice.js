@@ -39,6 +39,23 @@ export const AuthSlice = createSlice({
       state.pending = false;
       state.error = action.payload.error
     },
+    logout: (state, action) => {
+      state.error = null;
+      state.isAuthenticated = false;
+      state.pending = false;
+      state.user = null
+      state.message = action.payload.message
+    },
+    logoutPending: (state, action) => {
+      state.pending = true;
+      state.error = null;
+      state.message = null
+    },
+    logoutFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload.error
+      state.message = null
+    },
     clearError: (state, action) => {
       state.error = null
     }
