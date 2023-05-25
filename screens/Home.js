@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, SafeAreaView, StatusBar, FlatList, Platform, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, StatusBar, FlatList, Platform, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import ExpoStatusBar from 'expo-status-bar/build/ExpoStatusBar'
 import Task from '../components/Task'
@@ -7,7 +7,9 @@ import { Entypo } from '@expo/vector-icons';
 import { Dialog, TextInput } from 'react-native-paper'
 import { useDispatch, useSelector } from 'react-redux'
 import EmptyListItem from '../components/EmptyListItem'
-import { taddTask } from '../redux/thunks/MessageThunk'
+import { taddTask, tdeleteTask, tupdateTask } from '../redux/thunks/MessageThunk'
+import { getMyProfile } from '../redux/thunks/AuthThunks'
+import { actions as MessageActions } from '../redux/slices.js/MessageSlice'
 const Home = ({ route, navigation }) => {
   const [openDialog, setOpenDialog] = useState(false)
   const [title, setTitle] = useState('')
@@ -22,6 +24,19 @@ const Home = ({ route, navigation }) => {
     })
   }, [])
 
+  useEffect(() => {
+    if (state.message.message) {
+      Alert.alert('Task added..', state.message.message, [{ text: 'ok', style: 'destructive' }])
+      dispatch(MessageActions.clearMessage())
+      dispatch(getMyProfile)//getMyProfile to access updated tasks in it.
+    }
+    if (state.message.error) {
+      Alert.alert('Task added failed...', state.message.error, [{ text: 'ok', style: 'destructive' }])
+      dispatch(MessageActions.clearError())
+    }
+  }, [state.message.message, state.message.error])
+
+
   function onTitleChangeHandler(titleTxt) {
     setTitle(titleTxt)
   }
@@ -34,6 +49,12 @@ const Home = ({ route, navigation }) => {
   function addTaskHandler() {
     dispatch(taddTask(title, description))
   }
+  function toggleTaskCompleted(id) {
+    dispatch(tupdateTask(id))
+  }
+  function deleteTaskHandler(id) {
+    dispatch(tdeleteTask(id))
+  }
   const tasks = state.auth.user.tasks
 
   return <SafeAreaView style={[styles.screen]}>
@@ -43,7 +64,12 @@ const Home = ({ route, navigation }) => {
       ListHeaderComponent={<ListHeader title='All Tasks' />}
       data={tasks}
       keyExtractor={(task) => task._id}
-      renderItem={(taskWrapper) => <Task task={taskWrapper.item} />}
+      renderItem={(taskWrapper) => {
+        return <Task
+          onDelete={deleteTaskHandler}
+          onUpdate={toggleTaskCompleted}
+          task={taskWrapper.item} />
+      }}
     />
     <TouchableOpacity
       style={[styles.btnAdd]}
@@ -61,6 +87,7 @@ const Home = ({ route, navigation }) => {
       <Dialog.Title>Add Task</Dialog.Title>
       <Dialog.Content style={{ paddingBottom: 5 }}>
         <TextInput
+          disabled={state.message.pending}
           onChangeText={onTitleChangeHandler}
           cursorColor='#000'
           underlineStyle={{ display: 'none' }}
@@ -68,6 +95,7 @@ const Home = ({ route, navigation }) => {
           placeholder='Title'
         />
         <TextInput
+          disabled={state.message.pending}
           onChangeText={onDescriptionChangeHandler}
           multiline={true}
           cursorColor='#000'
@@ -77,13 +105,15 @@ const Home = ({ route, navigation }) => {
         />
         <Dialog.Actions style={styles.actions}>
           <TouchableOpacity
+            disabled={state.message.pending}
             onPress={toggleDialogHandler}
           >
             <Text style={[styles.btnText, { backgroundColor: '#bd1f36' }]}>Cancel</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={toggleDialogHandler}>
+            disabled={state.message.pending}
+            onPress={addTaskHandler}>
             <Text style={[styles.btnText, { backgroundColor: '#FF8E0D' }]}>Add</Text>
           </TouchableOpacity>
         </Dialog.Actions>

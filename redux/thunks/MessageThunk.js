@@ -26,3 +26,41 @@ export function taddTask(title, description) {
     }
   }
 }
+
+export function tupdateTask(id) {
+  return async (dispatch, getState) => {
+    dispatch(MessageActions.updateTaskPending());
+    try {
+      let config = {
+        method: 'get',
+        url: `${serverURL}/task/${id}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const { data } = await axios.request(config)
+      dispatch(MessageActions.updateTask({ message: data.message }));
+    } catch (error) {
+      dispatch(MessageActions.updateTaskFailure({ error: error }));
+    }
+  }
+}
+
+export function tdeleteTask(id) {
+  return async (dispatch, getState) => {
+    dispatch(MessageActions.deleteTaskPending());
+    try {
+      let config = {
+        method: 'delete',
+        url: `${serverURL}/task/${id}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const { data } = await axios.request(config)
+      dispatch(MessageActions.deleteTask({ message: data.message }));
+    } catch (error) {
+      dispatch(MessageActions.deleteTaskFailure({ error: error }));
+    }
+  }
+}

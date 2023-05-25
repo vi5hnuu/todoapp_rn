@@ -21,6 +21,32 @@ export const messageSlice = createSlice({
       state.pending = false;
       state.error = action.payload.error
     },
+    updateTask: (state, action) => {
+      state.pending = false;
+      state.error = null;
+      state.message = action.payload.message
+    },
+    updateTaskPending: (state, action) => {
+      state.pending = true;
+      state.error = null
+    },
+    updateTaskFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload.error
+    },
+    deleteTask: (state, action) => {
+      state.pending = false;
+      state.error = null;
+      state.message = action.payload.message
+    },
+    deleteTaskPending: (state, action) => {
+      state.pending = true;
+      state.error = null
+    },
+    deleteTaskFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload.error
+    },
     clearError: (state, action) => {
       state.error = null;
     },
