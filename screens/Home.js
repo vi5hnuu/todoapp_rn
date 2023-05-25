@@ -1,20 +1,27 @@
 import { View, Text, StyleSheet, SafeAreaView, StatusBar, FlatList, Platform, TouchableOpacity } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import ExpoStatusBar from 'expo-status-bar/build/ExpoStatusBar'
 import Task from '../components/Task'
 import ListHeader from '../components/ListHeader'
 import { Entypo } from '@expo/vector-icons';
 import { Dialog, TextInput } from 'react-native-paper'
+import { useDispatch, useSelector } from 'react-redux'
+import EmptyListItem from '../components/EmptyListItem'
+import { taddTask } from '../redux/thunks/MessageThunk'
 const Home = ({ route, navigation }) => {
   const [openDialog, setOpenDialog] = useState(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const state = useSelector(state => state)
+
+  const dispatch = useDispatch()
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: 'Tasks',
     })
   }, [])
+
   function onTitleChangeHandler(titleTxt) {
     setTitle(titleTxt)
   }
@@ -24,20 +31,15 @@ const Home = ({ route, navigation }) => {
   function toggleDialogHandler() {
     setOpenDialog((open) => !open)
   }
-  const tasks = [
-    { _id: 1, title: 'abc', description: 'abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc', completed: false },
-    { _id: 2, title: 'abc', description: 'abc', completed: false },
-    { _id: 3, title: 'abc', description: 'abc', completed: false },
-    { _id: 4, title: 'abc', description: 'abc', completed: true },
-    { _id: 5, title: 'abc', description: 'abc', completed: false },
-    { _id: 6, title: 'abc', description: 'abc', completed: false },
-    { _id: 7, title: 'abc', description: 'abc', completed: false },
-    { _id: 8, title: 'abc', description: 'abc', completed: false },
-    { _id: 9, title: 'abc', description: 'abc', completed: false }]
+  function addTaskHandler() {
+    dispatch(taddTask(title, description))
+  }
+  const tasks = state.auth.user.tasks
 
   return <SafeAreaView style={[styles.screen]}>
     <FlatList
       style={styles.list}
+      ListEmptyComponent={<EmptyListItem label='No Tasks, add some' />}
       ListHeaderComponent={<ListHeader title='All Tasks' />}
       data={tasks}
       keyExtractor={(task) => task._id}
@@ -55,12 +57,12 @@ const Home = ({ route, navigation }) => {
     <Dialog
       onDismiss={toggleDialogHandler}
       visible={openDialog}
-      style={{ backgroundColor: '#FFEDD8' }}>
+      style={{ backgroundColor: '#fff' }}>
       <Dialog.Title>Add Task</Dialog.Title>
       <Dialog.Content style={{ paddingBottom: 5 }}>
         <TextInput
           onChangeText={onTitleChangeHandler}
-          cursorColor='#EB7D00'
+          cursorColor='#000'
           underlineStyle={{ display: 'none' }}
           style={styles.input}
           placeholder='Title'
@@ -68,7 +70,7 @@ const Home = ({ route, navigation }) => {
         <TextInput
           onChangeText={onDescriptionChangeHandler}
           multiline={true}
-          cursorColor='#EB7D00'
+          cursorColor='#000'
           underlineStyle={{ display: 'none' }}
           style={[styles.input, { marginBottom: 12, minHeight: 80, maxHeight: 120 }]}
           placeholder='Description'
@@ -110,10 +112,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   input: {
-    backgroundColor: '#FFF3E5',
+    backgroundColor: '#fff',
     borderRadius: 5,
     marginBottom: 5,
-    borderColor: '#653600',
+    borderColor: '#000',
     borderWidth: 1,
     textAlignVertical: 'top'
   },
