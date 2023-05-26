@@ -39,7 +39,7 @@ const User = ({ route, navigation }) => {
     dispatch(tlogout())
   }
   function onUpdatehandler() {
-    if (name === authS.user.name || avatar === authS.user.avatar.url) {
+    if (name === authS.user.name && avatar === authS.user.avatar.url) {
       Alert.alert('No Change', 'Change your avatar and name to update.')
       return;
     }
