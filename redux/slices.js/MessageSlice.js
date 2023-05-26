@@ -73,6 +73,7 @@ export const messageSlice = createSlice({
       state.pending = false;
       state.error = action.payload.error
     },
+
     clearError: (state, action) => {
       state.error = null;
     },

@@ -9,9 +9,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import Register from '../screens/Register'
 import CameraX from '../screens/CameraX'
+import Verify from '../screens/Verify'
 import { useDispatch, useSelector } from 'react-redux'
 import { getMyProfile } from '../redux/thunks/AuthThunks'
 import { ActivityIndicator, Text, View } from 'react-native'
+import ChangePassword from '../screens/ChangePassword'
+import ForgotPassword from '../screens/ForgotPassword'
 
 const Stack = createNativeStackNavigator()
 const BottomTabs = createBottomTabNavigator()
@@ -62,11 +65,23 @@ const Main = () => {
 
   return <NavigationContainer>
     <Stack.Navigator id='stacknav'>
-      {isAuthenticated ? <Stack.Screen
-        name='userOverview'
-        component={UserOverview}
-        options={{ headerShown: false }}
-      /> : <>
+      {isAuthenticated ? <>
+        <Stack.Screen
+          name='userOverview'
+          component={UserOverview}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='changePassword'
+          component={ChangePassword}
+          options={{ title: 'Change Password' }}
+        />
+        <Stack.Screen
+          name='verify'
+          component={Verify}
+          options={{ title: 'Change Password' }}
+        />
+      </> : <>
         <Stack.Screen
           name='login'
           component={Login}
@@ -74,6 +89,11 @@ const Main = () => {
         <Stack.Screen
           name='register'
           component={Register}
+        />
+        <Stack.Screen
+          name='forgotPassword'
+          component={ForgotPassword}
+          options={{ title: 'Forgot Password' }}
         />
       </>}
       <Stack.Screen

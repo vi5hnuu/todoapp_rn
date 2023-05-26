@@ -56,6 +56,36 @@ export const AuthSlice = createSlice({
       state.error = action.payload.error
       state.message = null
     },
+    register: (state, action) => {
+      state.error = null;
+      state.isAuthenticated = true;
+      state.pending = false;
+      state.user = action.payload.user
+      state.message = action.payload.message
+    },
+    registerPending: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    registerFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload.error
+    },
+    verifyAccount: (state, action) => {
+      state.error = null;
+      state.isAuthenticated = true;
+      state.pending = false;
+      state.user = action.payload.user
+      state.message = action.payload.message
+    },
+    verifyAccountPending: (state, action) => {
+      state.pending = true;
+      state.error = null;
+    },
+    verifyAccountFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload.error
+    },
     clearError: (state, action) => {
       state.error = null
     }

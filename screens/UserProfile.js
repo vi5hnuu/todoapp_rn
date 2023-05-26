@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { tlogout } from '../redux/thunks/AuthThunks'
 import { tupdateProfile } from '../redux/thunks/MessageThunk'
 import mime from 'mime'
+import { MaterialIcons } from '@expo/vector-icons';
 
-//TODO : change photo -> call parent navigator camera screen using dispatch
 //TODO : implement change password, update
 
 const User = ({ route, navigation }) => {
@@ -56,6 +56,9 @@ const User = ({ route, navigation }) => {
     }
     dispatch(tupdateProfile(myform))
   }
+  function onVerifyHandler() {
+    navigation.navigate('verify')
+  }
   return <ScrollView
     contentContainerStyle={{
       flexGrow: 1,
@@ -63,12 +66,19 @@ const User = ({ route, navigation }) => {
       justifyContent: 'center'
     }}
   >
+    {!authS.user.verified && <Text style={styles.textWarn}>Account will soon be deleted if not verified.</Text>}
     <TouchableOpacity
       onPress={handlerChangePhoto}
       style={styles.avatar}>
       <Avatar.Image
         source={{ uri: avatar }} />
-      <Text style={{ color: '#ba181b' }}>Change Photo</Text>
+      <Text style={{ color: '#ba181b', marginTop: 7 }}>Change Photo</Text>
+      <View style={styles.verifyIconContainer}>
+        <MaterialIcons
+          name="verified"
+          size={24}
+          color={authS.user.verified ? '#48cae4' : '#adb5bd'} />
+      </View>
     </TouchableOpacity>
     <View style={{ width: '70%', gap: 5, marginBottom: 10 }}>
       <TextInput
@@ -96,6 +106,12 @@ const User = ({ route, navigation }) => {
             backgroundColor: '#9d0208',
           }
         ]}>Update</Button>
+
+      {!authS.user.verified && <Button
+        disabled={authS.pending || messageS.pending}
+        onPress={onVerifyHandler}
+        textColor='#03045e'
+        style={[styles.btn, { backgroundColor: '#48cae4' }]}>Verify Account</Button>}
       <Button
         disabled={messageS.pending}
         onPress={() => {
@@ -104,7 +120,7 @@ const User = ({ route, navigation }) => {
         textColor='#000'
         style={styles.btn}>change Password</Button>
       <Button
-        disabled={authS.pending}
+        disabled={authS.pending || messageS.pending}
         onPress={logoutHandler}
         textColor='#000'
         style={styles.btn}>Log-out</Button>
@@ -130,6 +146,18 @@ const styles = StyleSheet.create({
   },
   btn: {
     borderRadius: 5
+  },
+  verifyIconContainer: {
+    position: 'absolute',
+    right: -5,
+    top: -5
+  },
+  textWarn: {
+    color: '#ba181b',
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: 7,
+    fontWeight: 'bold',
   }
 })
 export default User

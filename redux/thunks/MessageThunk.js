@@ -66,7 +66,7 @@ export function tdeleteTask(id) {
 }
 
 
-export function tupdateProfile(formData) {//TODO
+export function tupdateProfile(formData) {
   return async (dispatch, getState) => {
     dispatch(MessageActions.updateProfilePending());
     try {
@@ -85,7 +85,7 @@ export function tupdateProfile(formData) {//TODO
     }
   }
 }
-export function tupdatePassword({ oldPassword, newPassword, confirmPassword }) {//TODO
+export function tupdatePassword(oldPassword, newPassword, confirmPassword) {
   return async (dispatch, getState) => {
     dispatch(MessageActions.updatePasswordPending());
     try {
@@ -98,9 +98,11 @@ export function tupdatePassword({ oldPassword, newPassword, confirmPassword }) {
         data: { oldPassword, newPassword, confirmPassword }
       };
       const { data } = await axios.request(config)
+
       dispatch(MessageActions.updatePassword({ message: data.message }));
     } catch (error) {
       dispatch(MessageActions.updatePasswordFailure({ error: error }));
     }
   }
 }
+

@@ -61,3 +61,45 @@ export function tlogout() {//TODO
     }
   }
 }
+
+export function register(formData) {
+  return async (dispatch, getState) => {
+    dispatch(AuthActions.registerPending());
+    try {
+      let config = {
+        method: 'post',
+        url: `${serverURL}/register`,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        data: formData
+      };
+      const { data } = await axios.request(config)
+      dispatch(AuthActions.register({ user: data.userData, message: data.message }));
+    } catch (error) {
+      console.log(error);
+      dispatch(AuthActions.registerFailure({ error: error }));
+    }
+  }
+}
+
+export function tverifyAccount(otp) {
+  return async (dispatch, getState) => {
+    dispatch(AuthActions.verifyAccountPending());
+    try {
+      let config = {
+        method: 'post',
+        url: `${serverURL}/verifyotp`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: { otp }
+      };
+      const { data } = await axios.request(config)
+
+      dispatch(AuthActions.verifyAccount({ user: data.userData, message: data.message }));
+    } catch (error) {
+      dispatch(AuthActions.verifyAccountFailure({ error: error }));
+    }
+  }
+}
