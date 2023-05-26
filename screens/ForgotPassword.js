@@ -1,42 +1,56 @@
 
 import { View, Text, StyleSheet, TextInput, Alert } from 'react-native'
 import { Button } from 'react-native-paper'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { tverifyAccount } from '../redux/thunks/AuthThunks'
+import { tForgotPassword } from '../redux/thunks/MessageThunk'
+import { actions as MessageActions } from '../redux/slices.js/MessageSlice'
 
-const ForgotPassword = () => {
+const ForgotPassword = ({ route, navigation }) => {
   const [email, setEmail] = useState('')
-  const authS = useSelector(state => state.auth)
+  const messageS = useSelector(state => state.message)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (messageS.message) {
+      Alert.alert('Hello user!', messageS.message)
+      dispatch(MessageActions.clearMessage())
+      navigation.navigate('resetPassword')
+      return
+    }
+    if (messageS.error) {
+      Alert.alert('Hello user!⚠️', messageS.error)
+      dispatch(MessageActions.clearError())
+    }
+  }, [messageS.message, messageS.error])
 
   function onEmailChangeHandler(emailTxt) {
     setEmail(emailTxt)
   }
-  function onSentOtp() {
+  function onSendEmail() {
     if (!email.trim()) {
       return Alert.alert(`Hello user!`, '⚠️Please enter valid email address.')
     }
-    // dispatch(tverifyAccount(otp))
+    dispatch(tForgotPassword(email))
   }
 
   return <View style={{ backgroundColor: '#fff', flex: 1 }}>
     <View style={styles.container}>
-      <Text style={styles.welcome}>Account Verification</Text>
+      <Text style={styles.welcome}>Forgot Password</Text>
       <TextInput
-        disabled={authS.pending}
+        disabled={messageS.pending}
         style={styles.input}
         keyboardType='email-address'
         placeholder='xyz@gmail.com'
         onChangeText={onEmailChangeHandler} />
       <View style={{ gap: 7 }}>
         <Button
-          disabled={authS.pending}
-          onPress={onSentOtp}
+          disabled={messageS.pending}
+          onPress={onSendEmail}
           textColor='#fff'
-          style={[styles.btn, { backgroundColor: '#ba181b' }]}>Send Otp</Button>
+          style={[styles.btn, { backgroundColor: '#ba181b' }]}>Send Email</Button>
         <Button
-          disabled={authS.pending}
+          disabled={messageS.pending}
           style={styles.btn}
           onPress={() => {
             navigation.goBack()

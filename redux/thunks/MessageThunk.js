@@ -101,7 +101,27 @@ export function tupdatePassword(oldPassword, newPassword, confirmPassword) {
 
       dispatch(MessageActions.updatePassword({ message: data.message }));
     } catch (error) {
-      dispatch(MessageActions.updatePasswordFailure({ error: error }));
+      dispatch(MessageActions.updatePasswordFailure({ error: error.message }));
+    }
+  }
+}
+export function tForgotPassword(email) {
+  return async (dispatch, getState) => {
+    dispatch(MessageActions.forgotPasswordPending());
+    try {
+      let config = {
+        method: 'post',
+        url: `${serverURL}/forgotpassword`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: { email }
+      };
+      const { data } = await axios.request(config)
+
+      dispatch(MessageActions.forgotPassword({ message: data.message }));
+    } catch (error) {
+      dispatch(MessageActions.forgotPasswordFailure({ error: error.message }));
     }
   }
 }

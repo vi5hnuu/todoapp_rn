@@ -73,7 +73,19 @@ export const messageSlice = createSlice({
       state.pending = false;
       state.error = action.payload.error
     },
-
+    forgotPassword: (state, action) => {
+      state.pending = false;
+      state.error = null;
+      state.message = action.payload.message
+    },
+    forgotPasswordPending: (state, action) => {
+      state.pending = true;
+      state.error = null
+    },
+    forgotPasswordFailure: (state, action) => {
+      state.pending = false;
+      state.error = action.payload.error
+    },
     clearError: (state, action) => {
       state.error = null;
     },

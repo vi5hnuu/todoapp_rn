@@ -15,6 +15,7 @@ import { getMyProfile } from '../redux/thunks/AuthThunks'
 import { ActivityIndicator, Text, View } from 'react-native'
 import ChangePassword from '../screens/ChangePassword'
 import ForgotPassword from '../screens/ForgotPassword'
+import ResetPassword from '../screens/ResetPassword'
 
 const Stack = createNativeStackNavigator()
 const BottomTabs = createBottomTabNavigator()
@@ -93,6 +94,11 @@ const Main = () => {
         <Stack.Screen
           name='forgotPassword'
           component={ForgotPassword}
+          options={{ title: 'Forgot Password' }}
+        />
+        <Stack.Screen
+          name='resetPassword'
+          component={ResetPassword}
           options={{ title: 'Forgot Password' }}
         />
       </>}

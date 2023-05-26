@@ -103,3 +103,25 @@ export function tverifyAccount(otp) {
     }
   }
 }
+
+
+export function tresetPassword(otp, newpassword) {
+  return async (dispatch, getState) => {
+    dispatch(AuthActions.resetPasswordPending());
+    try {
+      let config = {
+        method: 'put',
+        url: `${serverURL}/resetpassword`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: { otp, newpassword }
+      };
+      const { data } = await axios.request(config)
+
+      dispatch(AuthActions.resetPassword({ user: data.userData, message: data.message }));
+    } catch (error) {
+      dispatch(AuthActions.resetPasswordFailure({ error: error.message }));
+    }
+  }
+}
