@@ -1,11 +1,17 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import { Avatar, Button } from 'react-native-paper'
 import { useDispatch, useSelector } from 'react-redux'
 import { tlogout } from '../redux/thunks/AuthThunks'
+import { tupdateProfile } from '../redux/thunks/MessageThunk'
+import mime from 'mime'
+
+//TODO : change photo -> call parent navigator camera screen using dispatch
+//TODO : implement change password, update
 
 const User = ({ route, navigation }) => {
   const authS = useSelector(state => state.auth)
+  const messageS = useSelector(state => state.message)
   const dispatch = useDispatch()
 
   const [name, setName] = useState(authS.user.name)
@@ -17,8 +23,11 @@ const User = ({ route, navigation }) => {
     })
   }, [])
 
+  function onNameChangeHandler(nameTxt) {
+    setName(nameTxt)
+  }
   function handlerChangePhoto() {
-    navigation.navigate('camera', { onBack: onAvatarChangeHandler })
+    navigation.getParent('stacknav').navigate('camera', { onBack: onAvatarChangeHandler })
   }
   function onAvatarChangeHandler(uri) {
     if (!uri) {
@@ -28,6 +37,24 @@ const User = ({ route, navigation }) => {
   }
   function logoutHandler() {
     dispatch(tlogout())
+  }
+  function onUpdatehandler() {
+    if (name === authS.user.name || avatar === authS.user.avatar.url) {
+      Alert.alert('No Change', 'Change your avatar and name to update.')
+      return;
+    }
+    const myform = new FormData()
+    if (name !== authS.user.name) {
+      myform.append('name', name)
+    }
+    if (avatar !== authS.user.avatar.url) {
+      myform.append('avatar', {
+        uri: avatar,
+        type: mime.getType(avatar),
+        name: avatar.split('/').pop()
+      })
+    }
+    dispatch(tupdateProfile(myform))
   }
   return <ScrollView
     contentContainerStyle={{
@@ -45,24 +72,23 @@ const User = ({ route, navigation }) => {
     </TouchableOpacity>
     <View style={{ width: '70%', gap: 5, marginBottom: 10 }}>
       <TextInput
-        disabled={authS.pending}
+        disabled={authS.pending || messageS.pending}
         style={styles.input}
         keyboardType='default'
         defaultValue={name}
         placeholder='vishnu kumar'
-        onChangeText={() => { }} />
+        onChangeText={onNameChangeHandler} />
       <TextInput
         editable={false}
         style={styles.input}
         keyboardType='default'
         defaultValue={email}
-        placeholder='vishnu kumar'
-        onChangeText={() => { }} />
+        placeholder='xyz@gmail.com' />
     </View>
     <View style={styles.actions}>
       <Button
-        disabled={authS.pending}
-        onPress={() => { }}
+        disabled={messageS.pending}
+        onPress={onUpdatehandler}
         textColor='#fff'
         style={[
           styles.btn,
@@ -71,7 +97,7 @@ const User = ({ route, navigation }) => {
           }
         ]}>Update</Button>
       <Button
-        disabled={authS.pending}
+        disabled={messageS.pending}
         onPress={() => {
           navigation.navigate('changePassword')
         }}

@@ -61,7 +61,7 @@ const Main = () => {
   }
 
   return <NavigationContainer>
-    <Stack.Navigator>
+    <Stack.Navigator id='stacknav'>
       {isAuthenticated ? <Stack.Screen
         name='userOverview'
         component={UserOverview}
@@ -75,12 +75,11 @@ const Main = () => {
           name='register'
           component={Register}
         />
-        <Stack.Screen
-          name='camera'
-          component={CameraX}
-        />
       </>}
-
+      <Stack.Screen
+        name='camera'
+        component={CameraX}
+      />
     </Stack.Navigator>
   </NavigationContainer>
 }

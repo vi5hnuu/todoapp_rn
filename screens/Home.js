@@ -26,12 +26,12 @@ const Home = ({ route, navigation }) => {
 
   useEffect(() => {
     if (state.message.message) {
-      Alert.alert('Task added..', state.message.message, [{ text: 'ok', style: 'destructive' }])
+      Alert.alert('Hello User! ✅', state.message.message.toString(), [{ text: 'ok', style: 'destructive' }])
       dispatch(MessageActions.clearMessage())
       dispatch(getMyProfile)//getMyProfile to access updated tasks in it.
     }
     if (state.message.error) {
-      Alert.alert('Task added failed...', state.message.error, [{ text: 'ok', style: 'destructive' }])
+      Alert.alert('Hello User! ⚠️', state.message.error.toString(), [{ text: 'ok', style: 'destructive' }])
       dispatch(MessageActions.clearError())
     }
   }, [state.message.message, state.message.error])

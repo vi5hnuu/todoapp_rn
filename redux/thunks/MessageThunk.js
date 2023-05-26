@@ -72,16 +72,16 @@ export function tupdateProfile(formData) {//TODO
     try {
       let config = {
         method: 'patch',
-        url: `${serverURL}/updateProfile`,
+        url: `${serverURL}/updateprofile`,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data'
         },
         data: formData
       };
       const { data } = await axios.request(config)
       dispatch(MessageActions.updateProfile({ message: data.message }));
     } catch (error) {
-      dispatch(MessageActions.updateProfileFailure({ error: error }));
+      dispatch(MessageActions.updateProfileFailure({ error: error.message }));
     }
   }
 }
